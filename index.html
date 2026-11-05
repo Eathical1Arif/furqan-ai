@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090b14">
+<title>FURQAN AI — Intelligent Workspace</title>
+<style>
+:root{
+ --bg:#090b14;
+ --panel:#101321;
+ --card:#151a2b;
+ --hover:#20263a;
+ --text:#f4f5ff;
+ --muted:#9299b2;
+ --accent:#9475ff;
+ --accent2:#40c8ff;
+ --border:rgba(255,255,255,.09);
+ --glow:rgba(148,117,255,.17);
+}
+*{box-sizing:border-box}
+body{
+ margin:0;background:var(--bg);color:var(--text);
+ font-family:Inter,system-ui,-apple-system,Arial,sans-serif;
+ min-height:100vh;
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.app{display:flex;min-height:100vh}
+.sidebar{
+ width:265px;background:var(--panel);border-right:1px solid var(--border);
+ padding:20px 14px;display:flex;flex-direction:column;
+ position:fixed;inset:0 auto 0 0;z-index:20;
+ transition:transform .25s;overflow-y:auto;
+}
+.brand{display:flex;align-items:center;gap:11px;padding:5px 8px 23px}
+.logo{
+ width:39px;height:39px;border-radius:13px;
+ background:linear-gradient(135deg,var(--accent),var(--accent2));
+ display:grid;place-items:center;font-size:21px;font-weight:900;
+ color:white;box-shadow:0 0 25px var(--glow);
+}
+.brand-name{font-size:17px;font-weight:850;letter-spacing:1px}
+.brand-sub{font-size:10px;color:var(--muted);letter-spacing:2px}
+.group-title{
+ color:#717993;font-size:10px;font-weight:800;
+ letter-spacing:1.5px;padding:15px 10px 7px;
+}
+.nav{
+ display:flex;align-items:center;gap:12px;width:100%;
+ padding:11px 12px;border:0;border-radius:10px;
+ background:transparent;color:var(--muted);
+ text-align:left;font-size:13px;margin:2px 0;
+ transition:.2s;
+}
+.nav:hover,.nav.active{background:var(--hover);color:var(--text)}
+.nav.active{box-shadow:inset 3px 0 var(--accent)}
+.nav-icon{width:19px;text-align:center;font-size:16px}
+.nav-bottom{margin-top:auto;border-top:1px solid var(--border);padding-top:12px}
+.profile{display:flex;align-items:center;gap:10px;padding:12px 7px}
+.avatar{
+ width:34px;height:34px;border-radius:50%;
+ display:grid;place-items:center;background:linear-gradient(135deg,#7658d9,#279ac6);
+ font-weight:800
+}
+.profile small{display:block;color:var(--muted);font-size:11px}
+.main{margin-left:265px;width:calc(100% - 265px);min-width:0}
+.topbar{
+ height:66px;border-bottom:1px solid var(--border);
+ display:flex;align-items:center;justify-content:space-between;
+ padding:0 27px;position:sticky;top:0;
+ background:rgba(9,11,20,.88);backdrop-filter:blur(15px);z-index:10;
+}
+.top-left,.top-right{display:flex;align-items:center;gap:12px}
+.page-title{font-size:14px;font-weight:700}
+.top-btn{
+ background:var(--card);color:var(--text);border:1px solid var(--border);
+ border-radius:10px;padding:9px 12px;font-size:12px;
+}
+.content{max-width:1150px;margin:auto;padding:38px 30px 70px}
+.hero{text-align:center;padding:55px 10px 25px}
+.eyebrow{
+ color:var(--accent2);font-size:11px;letter-spacing:3px;
+ font-weight:800;margin-bottom:17px
+}
+.hero h1{font-size:clamp(30px,5vw,52px);margin:0 0 12px;letter-spacing:-2px}
+.gradient{
+ background:linear-gradient(90deg,#a78bfa,#58caff);
+ -webkit-background-clip:text;background-clip:text;color:transparent
+}
+.hero p{color:var(--muted);font-size:14px;line-height:1.8}
+.prompt-wrap{
+ max-width:760px;margin:26px auto 0;padding:13px;
+ background:var(--card);border:1px solid var(--border);
+ border-radius:18px;box-shadow:0 12px 50px var(--glow);
+}
+.prompt-wrap textarea{
+ width:100%;height:75px;resize:vertical;background:transparent;
+ color:var(--text);border:0;outline:none;padding:9px;font-size:14px
+}
+.prompt-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.prompt-tools{display:flex;gap:7px;flex-wrap:wrap}
+.small-btn{
+ border:1px solid var(--border);background:var(--hover);
+ color:var(--muted);border-radius:8px;padding:7px 10px;font-size:11px
+}
+.send{
+ border:0;border-radius:10px;padding:10px 17px;
+ background:linear-gradient(110deg,var(--accent),#5b9dff);
+ color:white;font-weight:800
+}
+.section-heading{
+ display:flex;justify-content:space-between;align-items:center;
+ margin:40px 0 17px
+}
+.section-heading h2{font-size:16px;margin:0}
+.muted{color:var(--muted);font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.tool-card{
+ background:var(--card);border:1px solid var(--border);
+ border-radius:15px;padding:19px;text-align:left;color:var(--text);
+ min-height:125px;transition:.2s;width:100%
+}
+.tool-card:hover{transform:translateY(-3px);border-color:var(--accent)}
+.tool-icon{
+ width:38px;height:38px;border-radius:11px;
+ display:grid;place-items:center;background:var(--glow);
+ font-size:20px;margin-bottom:13px
+}
+.tool-card b{display:block;font-size:13px;margin-bottom:6px}
+.tool-card span{font-size:11px;color:var(--muted);line-height:1.5}
+.view{display:none}
+.view.active{display:block}
+.panel{
+ background:var(--card);border:1px solid var(--border);
+ border-radius:16px;padding:22px;margin-top:15px
+}
+.panel h2{font-size:21px;margin:0 0 9px}
+.panel p{color:var(--muted);font-size:13px;line-height:1.7}
+.field{
+ width:100%;padding:12px 14px;background:var(--bg);
+ border:1px solid var(--border);border-radius:10px;color:var(--text);
+ outline:none;margin:8px 0
+}
+.action{
+ background:var(--accent);color:white;border:0;
+ padding:11px 16px;border-radius:10px;font-weight:700;font-size:12px
+}
+.list-item{
+ display:flex;align-items:center;justify-content:space-between;
+ gap:10px;padding:14px;border-bottom:1px solid var(--border);
+ font-size:13px
+}
+.chat-area{max-width:800px;margin:auto}
+.message{
+ padding:14px 17px;border-radius:14px;margin:13px 0;
+ background:var(--card);font-size:13px;line-height:1.7;
+ white-space:pre-wrap
+}
+.message.user{background:var(--glow);border:1px solid var(--border)}
+.empty{text-align:center;padding:50px 15px;color:var(--muted)}
+.theme-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+.theme{
+ width:95px;height:70px;border-radius:12px;border:2px solid var(--border);
+ color:white;font-size:11px;font-weight:700
+}
+.overlay{
+ display:none;position:fixed;inset:0;background:#0009;z-index:19
+}
+.footer{text-align:center;color:#68718b;font-size:11px;margin-top:55px}
+@media(max-width:900px){
+ .sidebar{transform:translateX(-100%)}
+ .sidebar.open{transform:translateX(0)}
+ .main{margin-left:0;width:100%}
+ .overlay.show{display:block}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:520px){
+ .content{padding:20px 15px 50px}
+ .topbar{padding:0 14px}
+ .hero{padding-top:45px}
+ .hero h1{letter-spacing:-1px}
+ .grid{grid-template-columns:1fr 1fr;gap:9px}
+ .tool-card{padding:13px;min-height:135px}
+ .top-btn{padding:8px}
+ .section-heading{margin-top:29px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+ <div class="brand">
+  <div class="logo">F</div>
+  <div><div class="brand-name">FURQAN AI</div>
+  <div class="brand-sub">INTELLIGENCE HUB</div></div>
+ </div>
+
+ <div class="group-title">WORKSPACE</div>
+ <button class="nav active" data-page="home"><span class="nav-icon">⌂</span>Dashboard</button>
+ <button class="nav" data-page="chat"><span class="nav-icon">✧</span>New Chat</button>
+ <button class="nav" data-page="search"><span class="nav-icon">⌕</span>Search Chats</button>
+ <button class="nav" data-page="projects"><span class="nav-icon">▣</span>Projects</button>
+ <button class="nav" data-page="chats"><span class="nav-icon">▤</span>Chats</button>
+ <button class="nav" data-page="explore"><span class="nav-icon">◈</span>Explore AI</button>
+
+ <div class="group-title">DEVELOPMENT LAB</div>
+ <button class="nav" data-page="coding"><span class="nav-icon">⌘</span>Coding Assistant</button>
+ <button class="nav" data-page="python"><span class="nav-icon">🐍</span>Python Tools</button>
+ <button class="nav" data-page="java"><span class="nav-icon">☕</span>Java Tools</button>
+ <button class="nav" data-page="kali"><span class="nav-icon">⌁</span>Kali Linux Lab</button>
+ <button class="nav" data-page="debug"><span class="nav-icon">⚙</span>Debugging Tools</button>
+ <button class="nav" data-page="website"><span class="nav-icon">🌐</span>Website Builder</button>
+ <button class="nav" data-page="database"><span class="nav-icon">▥</span>Database Tools</button>
+
+ <div class="group-title">CREATIVE STUDIO</div>
+ <button class="nav" data-page="image"><span class="nav-icon">▧</span>AI Image Studio</button>
+ <button class="nav" data-page="writing"><span class="nav-icon">✎</span>Writing Studio</button>
+ <button class="nav" data-page="pdf"><span class="nav-icon">▤</span>PDF Assistant</button>
+ <button class="nav" data-page="translator"><span class="nav-icon">文</span>Translator</button>
+
+ <div class="group-title">PERSONAL</div>
+ <button class="nav" data-page="promote"><span class="nav-icon">↗</span>Promote</button>
+
+ <div class="nav-bottom">
+  <button class="nav" data-page="themes"><span class="nav-icon">◐</span>Themes</button>
+  <button class="nav" data-page="settings"><span class="nav-icon">⚙</span>Settings</button>
+  <div class="profile"><div class="avatar">F</div>
+   <div><b style="font-size:12px">Furqan</b><small>Free Workspace</small></div>
+  </div>
+ </div>
+</aside>
+
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<main class="main">
+ <header class="topbar">
+  <div class="top-left">
+   <button class="top-btn" onclick="toggleSidebar()">☰</button>
+   <span class="page-title" id="topTitle">Dashboard</span>
+  </div>
+  <div class="top-right">
+   <span class="muted">FREE PLAN</span>
+   <button class="top-btn" onclick="go('themes')">◐ Theme</button>
+  </div>
+ </header>
+
+ <div class="content">
+
+ <!-- HOME -->
+ <section class="view active" id="home">
+  <div class="hero">
+   <div class="eyebrow">✦ YOUR PERSONAL INTELLIGENCE HUB ✦</div>
+   <h1>Welcome to <span class="gradient">FURQAN AI</span></h1>
+   <p>Think beyond limits. Build your ideas. Explore intelligence.<br>
+   Your personal digital workspace starts here.</p>
+   <div class="prompt-wrap">
+    <textarea id="homePrompt" placeholder="Ask anything... What would you like to create today?"></textarea>
+    <div class="prompt-bottom">
+     <div class="prompt-tools">
+      <button class="small-btn" onclick="go('image')">＋ Image</button>
+      <button class="small-btn" onclick="go('projects')">▣ Project</button>
+     </div>
+     <button class="send" onclick="sendHome()">↑ Send</button>
+    </div>
+   </div>
+  </div>
+
+  <div class="section-heading">
+   <h2>Explore your workspace</h2>
+   <span class="muted">Your tools, one place</span>
+  </div>
+  <div class="grid">
+   <button class="tool-card" onclick="go('chat')"><div class="tool-icon">✧</div><b>AI Assistant</b><span>Start a conversation and explore ideas.</span></button>
+   <button class="tool-card" onclick="go('projects')"><div class="tool-icon">▣</div><b>Projects</b><span>Organize your creative work.</span></button>
+   <button class="tool-card" onclick="go('coding')"><div class="tool-icon">⌘</div><b>Coding Lab</b><span>Explore programming and code.</span></button>
+   <button class="tool-card" onclick="go('python')"><div class="tool-icon">🐍</div><b>Python Studio</b><span>Learn and write Python scripts.</span></button>
+   <button class="tool-card" onclick="go('kali')"><div class="tool-icon">⌁</div><b>Cyber Lab</b><span>Learn Linux and defensive security.</span></button>
+   <button class="tool-card" onclick="go('image')"><div class="tool-icon">▧</div><b>Creative Studio</b><span>Plan images and creative projects.</span></button>
+  </div>
+  <div class="section-heading"><h2>Development tools</h2></div>
+  <div class="grid">
+   <button class="tool-card" onclick="go('java')"><div class="tool-icon">☕</div><b>Java Tools</b><span>Java learning and code assistance.</span></button>
+   <button class="tool-card" onclick="go('debug')"><div class="tool-icon">⚙</div><b>Code Debugger</b><span>Understand errors and troubleshoot.</span></button>
+   <button class="tool-card" onclick="go('website')"><div class="tool-icon">🌐</div><b>Website Builder</b><span>Plan and build web experiences.</span></button>
+  </div>
+ </section>
+
+ <!-- CHAT -->
+ <section class="view" id="chat">
+  <div class="hero">
+   <div class="eyebrow">FURQAN AI CONVERSATION</div>
+   <h1>What can I <span class="gradient">help with?</span></h1>
+   <p>Your workspace for ideas, learning and creativity.</p>
+  </div>
+  <div class="chat-area">
+   <div id="messages"><div class="empty">✧<br><br>Your conversation will appear here.</div></div>
+   <div class="prompt-wrap">
+    <textarea id="chatInput" placeholder="Message FURQAN AI..." rows="3"></textarea>
+    <div class="prompt-bottom">
+     <span class="muted">Demo mode · AI connection coming next</span>
+     <button class="send" onclick="sendChat()">↑ Send</button>
+    </div>
+   </div>
+  </div>
+ </section>
+
+ <!-- PROJECTS -->
+ <section class="view" id="projects">
+  <div class="panel">
+   <h2>▣ Your Projects</h2>
+   <p>Create and organize your work in one place.</p>
+   <input class="field" id="projectName" placeholder="Enter project name">
+   <button class="action" onclick="addProject()">＋ Create Project</button>
+   <div id="projectList"></div>
+  </div>
+ </section>
+
+ <!-- CHATS -->
+ <section class="view" id="chats">
+  <div class="panel"><h2>▤ Chat History</h2>
+   <p>Your saved conversations.</p>
+   <div id="chatList"></div>
+  </div>
+ </section>
+
+ <!-- SEARCH -->
+ <section class="view" id="search">
+  <div class="panel"><h2>⌕ Search Chats</h2>
+   <input class="field" id="searchInput" placeholder="Search your conversations..." oninput="searchChats()">
+   <div id="searchResults"></div>
+  </div>
+ </section>
+
+ <!-- EXPLORE -->
+ <section class="view" id="explore">
+  <div class="panel"><h2>◈ Explore AI</h2><p>Explore your available workspace tools.</p>
+   <div class="grid" id="exploreGrid"></div>
+  </div>
+ </section>
+
+ <!-- DEVELOPMENT TOOLS -->
+ <section class="view" id="coding">
+  <div class="panel"><h2>⌘ Coding Assistant</h2><p>Programming workspace for learning, writing and understanding code.</p>
+   <button class="action" onclick="go('python')">Python</button>
+   <button class="action" onclick="go('java')">Java</button>
+   <button class="action" onclick="go('debug')">Debugging</button>
+   <textarea class="field" rows="8" placeholder="Paste your code or describe your programming task..."></textarea>
+   <p>AI code explanation and generation will be enabled after backend connection.</p>
+  </div>
+ </section>
+
+ <section class="view" id="python">
+  <div class="panel"><h2>🐍 Python Studio</h2><p>Learn Python and prepare scripts.</p>
+   <div class="muted">Available learning tools</div>
+   <div class="list-item">Python Syntax Guide <span>Learning</span></div>
+   <div class="list-item">Variables & Functions <span>Learning</span></div>
+   <div class="list-item">File Handling <span>Learning</span></div>
+   <div class="list-item">API & Automation Concepts <span>Learning</span></div>
+   <textarea class="field" rows="7" placeholder="Write or paste Python code here..."></textarea>
+  </div>
+ </section>
+
+ <section class="view" id="java">
+  <div class="panel"><h2>☕ Java Studio</h2><p>Java programming learning workspace.</p>
+   <div class="list-item">Java Fundamentals <span>Learning</span></div>
+   <div class="list-item">Object Oriented Programming <span>Learning</span></div>
+   <div class="list-item">Classes & Methods <span>Learning</span></div>
+   <div class="list-item">Exception Handling <span>Learning</span></div>
+   <textarea class="field" rows="7" placeholder="Write or paste Java code here..."></textarea>
+  </div>
+ </section>
+
+ <section class="view" id="kali">
+  <div class="panel"><h2>⌁ Kali Linux Lab</h2>
+   <p>Cybersecurity education and authorized defensive learning.</p>
+   <div class="list-item">Linux Terminal Basics <span>Learn</span></div>
+   <div class="list-item">File Permissions & Users <span>Learn</span></div>
+   <div class="list-item">Network Diagnostics <span>Learn</span></div>
+   <div class="list-item">Security Logs Analysis <span>Learn</span></div>
+   <div class="list-item">Defensive Security Concepts <span>Learn</span></div>
+   <p>Educational workspace only. No live terminal or security scanning is enabled in this version.</p>
+  </div>
+ </section>
+
+ <section class="view" id="debug">
+  <div class="panel"><h2>⚙ Debugging Tools</h2><p>Prepare code for troubleshooting.</p>
+   <select class="field" id="debugLanguage">
+    <option>Python</option><option>Java</option><option>JavaScript</option><option>HTML/CSS</option>
+   </select>
+   <textarea class="field" rows="8" placeholder="Paste code or error message here..."></textarea>
+   <p>Code analysis will be connected to the AI backend in the next stage.</p>
+  </div>
+ </section>
+
+ <section class="view" id="website">
+  <div class="panel"><h2>🌐 Website Builder</h2><p>Plan your next website project.</p>
+   <input class="field" placeholder="Website name">
+   <textarea class="field" rows="5" placeholder="Describe the website you want to build..."></textarea>
+   <p>Website code generation will be enabled with the AI connection.</p>
+  </div>
+ </section>
+
+ <section class="view" id="database">
+  <div class="panel"><h2>▥ Database Tools</h2><p>Database learning and query workspace.</p>
+   <div class="list-item">SQL Fundamentals</div>
+   <div class="list-item">Database Design</div>
+   <div class="list-item">Tables and Relationships</div>
+   <textarea class="field" rows="6" placeholder="Write your SQL query here..."></textarea>
+  </div>
+ </section>
+
+ <!-- CREATIVE TOOLS -->
+ <section class="view" id="image">
+  <div class="panel"><h2>▧ AI Image Studio</h2><p>Prepare prompts for image creation.</p>
+   <textarea class="field" rows="5" placeholder="Describe your image idea..."></textarea>
+   <p>Image generation integration will be added in the next stage.</p>
+  </div>
+ </section>
+
+ <section class="view" id="writing">
+  <div class="panel"><h2>✎ Writing Studio</h2><p>Draft ideas for posts, captions, emails and articles.</p>
+   <select class="field"><option>Social media post</option><option>Email</option><option>Article</option><option>Caption</option></select>
+   <textarea class="field" rows="7" placeholder="Describe what you want to write..."></textarea>
+  </div>
+ </section>
+
+ <section class="view" id="pdf">
+  <div class="panel"><h2>▤ PDF Assistant</h2><p>Select a PDF to prepare for document assistance.</p>
+   <input type="file" class="field" accept=".pdf">
+   <p>PDF reading and summarization will be enabled after backend integration.</p>
+  </div>
+ </section>
+
+ <section class="view" id="translator">
+  <div class="panel"><h2>文 Translator</h2>
+   <select class="field"><option>English</option><option>Urdu</option><option>Arabic</option><option>Spanish</option><option>French</option></select>
+   <textarea class="field" rows="6" placeholder="Enter text to translate..."></textarea>
+   <p>AI translation will be connected in a later update.</p>
+  </div>
+ </section>
+
+ <!-- PROMOTE -->
+ <section class="view" id="promote">
+  <div class="panel"><h2>↗ Promote</h2>
+   <p>Organize and promote your digital projects.</p>
+   <input class="field" placeholder="Project or website name">
+   <input class="field" placeholder="Project URL">
+   <textarea class="field" rows="4" placeholder="Write a short project description..."></textarea>
+   <button class="action" onclick="alert('Promotion draft feature will be added in a future update.')">Prepare Promotion</button>
+  </div>
+ </section>
+
+ <!-- THEMES -->
+ <section class="view" id="themes">
+  <div class="panel"><h2>◐ Customize your experience</h2>
+   <p>Choose your favorite workspace theme.</p>
+   <div class="theme-row">
+    <button class="theme" style="background:#090b14" onclick="setTheme('midnight')">Midnight</button>
+    <button class="theme" style="background:#24163f" onclick="setTheme('purple')">Purple</button>
+    <button class="theme" style="background:#102641" onclick="setTheme('blue')">Cyber Blue</button>
+    <button class="theme" style="background:#12382e" onclick="setTheme('green')">Emerald</button>
+    <button class="theme" style="background:#eee;color:#222" onclick="setTheme('light')">Light</button>
+    <button class="theme" style="background:linear-gradient(135deg,#101321,#8b5cf6)" onclick="setTheme('neon')">Neon</button>
+   </div>
+   <p>Your selected theme is saved on this device.</p>
+  </div>
+ </section>
+
+ <!-- SETTINGS -->
+ <section class="view" id="settings">
+  <div class="panel"><h2>⚙ Settings</h2>
+   <p>Personalize your FURQAN AI workspace.</p>
+   <label class="muted">Display name</label>
+   <input class="field" id="displayName" value="Furqan">
+   <button class="action" onclick="saveName()">Save Name</button>
+   <div class="list-item">Workspace <span>FURQAN AI</span></div>
+   <div class="list-item">Access <span>Public</span></div>
+   <div class="list-item">Theme <span>Customizable</span></div>
+   <button class="action" style="background:#a33" onclick="clearData()">Clear Local Data</button>
+  </div>
+ </section>
+
+ <div class="footer">FURQAN AI · BUILD • CREATE • EXPLORE<br>Personal AI Workspace</div>
+ </div>
+</main>
+</div>
+
+<script>
+const titles={
+ home:"Dashboard",chat:"New Chat",search:"Search Chats",
+ projects:"Projects",chats:"Chats",explore:"Explore AI",
+ coding:"Coding Assistant",python:"Python Tools",java:"Java Tools",
+ kali:"Kali Linux Lab",debug:"Debugging Tools",website:"Website Builder",
+ database:"Database Tools",image:"AI Image Studio",writing:"Writing Studio",
+ pdf:"PDF Assistant",translator:"Translator",promote:"Promote",
+ themes:"Themes",settings:"Settings"
+};
+
+const toolPages=[
+ ["chat","✧","AI Assistant","Conversations and ideas"],
+ ["coding","⌘","Coding Assistant","Programming workspace"],
+ ["python","🐍","Python","Python learning tools"],
+ ["java","☕","Java","Java learning tools"],
+ ["kali","⌁","Kali Linux","Defensive security learning"],
+ ["debug","⚙","Debugger","Understand code errors"],
+ ["website","🌐","Website Builder","Website planning"],
+ ["database","▥","Database","SQL and database learning"],
+ ["image","▧","Image Studio","Creative image prompts"],
+ ["writing","✎","Writing Studio","Writing workspace"],
+ ["pdf","▤","PDF Assistant","Document workspace"],
+ ["translator","文","Translator","Translation workspace"]
+];
+
+let chats=JSON.parse(localStorage.getItem("furqanChats")||"[]");
+let projects=JSON.parse(localStorage.getItem("furqanProjects")||"[]");
+
+function save(){
+ localStorage.setItem("furqanChats",JSON.stringify(chats));
+ localStorage.setItem("furqanProjects",JSON.stringify(projects));
+}
+
+function go(id){
+ if(!titles[id])return;
+ document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ document.querySelectorAll(".nav").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+ document.getElementById("topTitle").textContent=titles[id];
+ document.getElementById("sidebar").classList.remove("open");
+ document.getElementById("overlay").classList.remove("show");
+ if(id==="projects")renderProjects();
+ if(id==="chats")renderChats();
+ if(id==="explore")renderExplore();
+}
+
+function toggleSidebar(){
+ document.getElementById("sidebar").classList.toggle("open");
+ document.getElementById("overlay").classList.toggle("show");
+}
+
+document.querySelectorAll(".nav").forEach(b=>{
+ b.addEventListener("click",()=>go(b.dataset.page));
+});
+
+function addProject(){
+ const input=document.getElementById("projectName");
+ const name=input.value.trim();
+ if(!name){alert("Please enter a project name.");return;}
+ projects.unshift({name,date:new Date().toLocaleDateString()});
+ save();input.value="";renderProjects();
+}
+
+function renderProjects(){
+ const box=document.getElementById("projectList");
+ box.innerHTML=projects.length?"":"<div class='empty'>No projects yet. Create your first project.</div>";
+ projects.forEach((p,i)=>{
+  const div=document.createElement("div");
+  div.className="list-item";
+  const span=document.createElement("span");
+  span.textContent="▣  "+p.name+" · "+p.date;
+  const del=document.createElement("button");
+  del.className="small-btn";del.textContent="Delete";
+  del.onclick=()=>{projects.splice(i,1);save();renderProjects();};
+  div.append(span,del);box.appendChild(div);
+ });
+}
+
+function renderChats(){
+ const box=document.getElementById("chatList");
+ box.innerHTML=chats.length?"":"<div class='empty'>Your conversations will appear here.</div>";
+ chats.forEach(c=>{
+  const div=document.createElement("div");
+  div.className="list-item";
+  const span=document.createElement("span");
+  span.textContent="✧  "+c.question;
+  const open=document.createElement("button");
+  open.className="small-btn";open.textContent="Open";
+  open.onclick=()=>{go("chat");document.getElementById("messages").innerHTML="";
+   addMessage(c.question,"user");addMessage(c.answer,"ai");};
+  div.append(span,open);box.appendChild(div);
+ });
+}
+
+function searchChats(){
+ const q=document.getElementById("searchInput").value.toLowerCase();
+ const box=document.getElementById("searchResults");
+ box.innerHTML="";
+ const results=chats.filter(c=>c.question.toLowerCase().includes(q));
+ results.forEach(c=>{
+  const div=document.createElement("div");
+  div.className="list-item";
+  div.textContent=c.question;
+  box.appendChild(div);
+ });
+ if(!results.length)box.textContent="No matching conversations.";
+}
+
+function renderExplore(){
+ const box=document.getElementById("exploreGrid");box.innerHTML="";
+ toolPages.forEach(t=>{
+  const b=document.createElement("button");
+  b.className="tool-card";
+  b.innerHTML="<div class='tool-icon'>"+t[1]+"</div><b>"+t[2]+"</b><span>"+t[3]+"</span>";
+  b.onclick=()=>go(t[0]);box.appendChild(b);
+ });
+}
+
+function addMessage(text,type){
+ const box=document.getElementById("messages");
+ if(box.querySelector(".empty"))box.innerHTML="";
+ const div=document.createElement("div");
+ div.className="message "+(type==="user"?"user":"");
+ div.textContent=text;box.appendChild(div);
+}
+
+function sendChat(){
+ const input=document.getElementById("chatInput");
+ const q=input.value.trim();if(!q)return;
+ addMessage(q,"user");
+ const answer="This is the FURQAN AI preview. Your message has been received, but real AI responses are not connected yet. The next development stage will connect a secure AI backend.";
+ addMessage(answer,"ai");
+ chats.unshift({question:q,answer});
+ save();input.value="";
+}
+
+function sendHome(){
+ const input=document.getElementById("homePrompt");
+ if(!input.value.trim())return;
+ const q=input.value.trim();input.value="";
+ go("chat");
+ document.getElementById("messages").innerHTML="";
+ document.getElementById("chatInput").value=q;
+ sendChat();
+}
+
+const themes={
+ midnight:["#090b14","#101321","#151a2b","#20263a","#f4f5ff","#9299b2","#9475ff","#40c8ff"],
+ purple:["#100a1d","#1b1230","#291b40","#3b2857","#fff5ff","#c0acd2","#b18aff","#ee82ff"],
+ blue:["#07111f","#0d1d32","#132a45","#203d5e","#f1f7ff","#9db3ce","#399dff","#47d8ff"],
+ green:["#07140f","#10251c","#18382b","#25503c","#effff5","#a1c5ad","#3abf86","#8be8b7"],
+ light:["#f4f6fb","#ffffff","#e8ecf5","#dce2ef","#172033","#68758d","#7656df","#279ac6"],
+ neon:["#090914","#141326","#201d3c","#32265a","#ffffff","#aaa3c9","#bd68ff","#3ce6ef"]
+};
+
+function setTheme(name){
+ const t=themes[name];if(!t)return;
+ const r=document.documentElement.style;
+ ["--bg","--panel","--card","--hover","--text","--muted","--accent","--accent2"].forEach((key,i)=>r.setProperty(key,t[i]));
+ localStorage.setItem("furqanTheme",name);
+}
+function saveName(){
+ const name=document.getElementById("displayName").value.trim();
+ if(!name){alert("Enter a name.");return;}
+ document.querySelector(".profile b").textContent=name;
+ localStorage.setItem("furqanName",name);
+ alert("Name saved!");
+}
+function clearData(){
+ if(!confirm("Delete your locally saved chats and projects?"))return;
+ chats=[];projects=[];save();renderProjects();renderChats();
+ alert("Local data cleared.");
+}
+
+const savedTheme=localStorage.getItem("furqanTheme");
+if(savedTheme)setTheme(savedTheme);
+const savedName=localStorage.getItem("furqanName");
+if(savedName){
+ document.getElementById("displayName").value=savedName;
+ document.querySelector(".profile b").textContent=savedName;
+}
+</script>
+</body>
+  </html>
