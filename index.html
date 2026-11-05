@@ -1,673 +1,517 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#090b14">
-<title>FURQAN AI — Intelligent Workspace</title>
+<meta name="theme-color" content="#070b16">
+<title>FURQAN AI — Your AI Command Center</title>
+
 <style>
 :root{
- --bg:#090b14;
- --panel:#101321;
- --card:#151a2b;
- --hover:#20263a;
- --text:#f4f5ff;
- --muted:#9299b2;
- --accent:#9475ff;
- --accent2:#40c8ff;
- --border:rgba(255,255,255,.09);
- --glow:rgba(148,117,255,.17);
+  --bg:#070b16;
+  --panel:#101a2b;
+  --panel2:#0b1423;
+  --accent:#36cfff;
+  --accent2:#167dff;
+  --text:#edf6ff;
+  --muted:#8ca3bc;
+  --border:rgba(120,190,255,.17);
+  --glow:rgba(35,185,255,.2);
 }
 *{box-sizing:border-box}
 body{
- margin:0;background:var(--bg);color:var(--text);
- font-family:Inter,system-ui,-apple-system,Arial,sans-serif;
- min-height:100vh;
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Inter,Arial,sans-serif;
+  min-height:100vh;overflow:hidden;
+  background-image:radial-gradient(ellipse at 70% 0%,var(--glow),transparent 45%);
 }
-button,input,textarea,select{font:inherit}
+button,input,textarea{font:inherit}
 button{cursor:pointer}
-.app{display:flex;min-height:100vh}
+.app{display:flex;height:100dvh;width:100%}
 .sidebar{
- width:265px;background:var(--panel);border-right:1px solid var(--border);
- padding:20px 14px;display:flex;flex-direction:column;
- position:fixed;inset:0 auto 0 0;z-index:20;
- transition:transform .25s;overflow-y:auto;
+  width:265px;flex-shrink:0;background:var(--panel2);
+  border-right:1px solid var(--border);padding:18px;
+  display:flex;flex-direction:column;gap:15px;z-index:5;
 }
-.brand{display:flex;align-items:center;gap:11px;padding:5px 8px 23px}
+.brand{display:flex;align-items:center;gap:11px;padding:8px 2px 17px}
 .logo{
- width:39px;height:39px;border-radius:13px;
- background:linear-gradient(135deg,var(--accent),var(--accent2));
- display:grid;place-items:center;font-size:21px;font-weight:900;
- color:white;box-shadow:0 0 25px var(--glow);
+  width:42px;height:42px;border-radius:14px;
+  display:grid;place-items:center;font-size:22px;font-weight:900;
+  color:#00121c;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  box-shadow:0 0 24px var(--glow)
 }
-.brand-name{font-size:17px;font-weight:850;letter-spacing:1px}
-.brand-sub{font-size:10px;color:var(--muted);letter-spacing:2px}
-.group-title{
- color:#717993;font-size:10px;font-weight:800;
- letter-spacing:1.5px;padding:15px 10px 7px;
+.brand h2{font-size:17px;margin:0;letter-spacing:1.5px}
+.brand small{display:block;color:var(--muted);font-size:10px;margin-top:4px;letter-spacing:2px}
+.newchat,.primary{
+  border:1px solid var(--border);border-radius:12px;padding:12px;
+  color:var(--text);background:linear-gradient(120deg,var(--panel),var(--panel2));
 }
-.nav{
- display:flex;align-items:center;gap:12px;width:100%;
- padding:11px 12px;border:0;border-radius:10px;
- background:transparent;color:var(--muted);
- text-align:left;font-size:13px;margin:2px 0;
- transition:.2s;
+.newchat{width:100%;text-align:left}
+.section-label{
+  color:var(--muted);font-size:10px;letter-spacing:2px;
+  margin:7px 0 2px;text-transform:uppercase
 }
-.nav:hover,.nav.active{background:var(--hover);color:var(--text)}
-.nav.active{box-shadow:inset 3px 0 var(--accent)}
-.nav-icon{width:19px;text-align:center;font-size:16px}
-.nav-bottom{margin-top:auto;border-top:1px solid var(--border);padding-top:12px}
-.profile{display:flex;align-items:center;gap:10px;padding:12px 7px}
+.nav{display:flex;flex-direction:column;gap:5px;overflow:auto}
+.nav button{
+  border:1px solid transparent;background:transparent;color:var(--muted);
+  text-align:left;padding:10px;border-radius:10px;font-size:13px
+}
+.nav button:hover,.nav button.active{
+  color:var(--text);background:var(--panel);border-color:var(--border)
+}
+.nav button span{display:inline-block;width:27px}
+.sidebar-bottom{margin-top:auto;display:grid;gap:8px}
+.theme-select,.account{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:12px;padding:11px;color:var(--text);width:100%
+}
+.account{display:flex;align-items:center;gap:10px;text-align:left}
 .avatar{
- width:34px;height:34px;border-radius:50%;
- display:grid;place-items:center;background:linear-gradient(135deg,#7658d9,#279ac6);
- font-weight:800
+  width:32px;height:32px;border-radius:50%;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));color:#00121c;font-weight:bold
 }
-.profile small{display:block;color:var(--muted);font-size:11px}
-.main{margin-left:265px;width:calc(100% - 265px);min-width:0}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;position:relative}
 .topbar{
- height:66px;border-bottom:1px solid var(--border);
- display:flex;align-items:center;justify-content:space-between;
- padding:0 27px;position:sticky;top:0;
- background:rgba(9,11,20,.88);backdrop-filter:blur(15px);z-index:10;
+  height:66px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 23px;border-bottom:1px solid var(--border);
+  background:rgba(8,14,27,.65);backdrop-filter:blur(14px)
 }
-.top-left,.top-right{display:flex;align-items:center;gap:12px}
-.page-title{font-size:14px;font-weight:700}
-.top-btn{
- background:var(--card);color:var(--text);border:1px solid var(--border);
- border-radius:10px;padding:9px 12px;font-size:12px;
+.top-left{display:flex;align-items:center;gap:12px}
+.topbar h3{font-size:14px;margin:0;letter-spacing:1px}
+.status{font-size:11px;color:var(--accent)}
+.top-actions{display:flex;gap:8px}
+.icon-btn{
+  border:1px solid var(--border);background:var(--panel);
+  color:var(--text);border-radius:10px;padding:9px 11px
 }
-.content{max-width:1150px;margin:auto;padding:38px 30px 70px}
-.hero{text-align:center;padding:55px 10px 25px}
-.eyebrow{
- color:var(--accent2);font-size:11px;letter-spacing:3px;
- font-weight:800;margin-bottom:17px
+.menu-btn{display:none}
+.content{flex:1;overflow:auto;padding:26px 18px 20px}
+.welcome{max-width:850px;margin:8vh auto 25px;text-align:center}
+.orb{
+  width:92px;height:92px;margin:auto auto 22px;border-radius:50%;
+  display:grid;place-items:center;font-size:38px;
+  border:1px solid var(--accent);color:var(--accent);
+  box-shadow:0 0 25px var(--glow),inset 0 0 25px var(--glow);
+  animation:pulse 3s infinite
 }
-.hero h1{font-size:clamp(30px,5vw,52px);margin:0 0 12px;letter-spacing:-2px}
+@keyframes pulse{50%{box-shadow:0 0 42px var(--glow),inset 0 0 30px var(--glow)}}
+.welcome h1{font-size:clamp(27px,5vw,43px);margin:0 0 10px}
 .gradient{
- background:linear-gradient(90deg,#a78bfa,#58caff);
- -webkit-background-clip:text;background-clip:text;color:transparent
+  background:linear-gradient(90deg,var(--accent),#fff,var(--accent2));
+  -webkit-background-clip:text;background-clip:text;color:transparent
 }
-.hero p{color:var(--muted);font-size:14px;line-height:1.8}
-.prompt-wrap{
- max-width:760px;margin:26px auto 0;padding:13px;
- background:var(--card);border:1px solid var(--border);
- border-radius:18px;box-shadow:0 12px 50px var(--glow);
+.welcome p{color:var(--muted);font-size:14px;line-height:1.7}
+.quick-grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;max-width:680px;margin:25px auto
 }
-.prompt-wrap textarea{
- width:100%;height:75px;resize:vertical;background:transparent;
- color:var(--text);border:0;outline:none;padding:9px;font-size:14px
+.quick{
+  text-align:left;background:var(--panel);border:1px solid var(--border);
+  border-radius:13px;padding:14px;color:var(--text)
 }
-.prompt-bottom{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.prompt-tools{display:flex;gap:7px;flex-wrap:wrap}
-.small-btn{
- border:1px solid var(--border);background:var(--hover);
- color:var(--muted);border-radius:8px;padding:7px 10px;font-size:11px
+.quick b{display:block;font-size:13px;margin-bottom:5px}
+.quick small{color:var(--muted);font-size:11px}
+.messages{max-width:850px;margin:0 auto;display:flex;flex-direction:column;gap:15px}
+.msg{display:flex;gap:10px;align-items:flex-start}
+.msg.user{flex-direction:row-reverse}
+.msg-icon{
+  width:32px;height:32px;flex-shrink:0;border-radius:11px;
+  display:grid;place-items:center;background:var(--panel);border:1px solid var(--border)
 }
-.send{
- border:0;border-radius:10px;padding:10px 17px;
- background:linear-gradient(110deg,var(--accent),#5b9dff);
- color:white;font-weight:800
+.bubble{
+  max-width:min(78%,700px);padding:13px 15px;border-radius:14px;
+  background:var(--panel);border:1px solid var(--border);
+  font-size:14px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere
 }
-.section-heading{
- display:flex;justify-content:space-between;align-items:center;
- margin:40px 0 17px
+.user .bubble{background:color-mix(in srgb,var(--accent2) 18%,var(--panel))}
+.composer-wrap{
+  padding:12px 18px 18px;background:linear-gradient(transparent,var(--bg) 20%)
 }
-.section-heading h2{font-size:16px;margin:0}
-.muted{color:var(--muted);font-size:12px}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
-.tool-card{
- background:var(--card);border:1px solid var(--border);
- border-radius:15px;padding:19px;text-align:left;color:var(--text);
- min-height:125px;transition:.2s;width:100%
+.composer{max-width:850px;margin:auto}
+.attach-preview{
+  display:none;margin-bottom:8px;padding:8px 12px;
+  border:1px solid var(--border);border-radius:10px;color:var(--muted);font-size:12px
 }
-.tool-card:hover{transform:translateY(-3px);border-color:var(--accent)}
-.tool-icon{
- width:38px;height:38px;border-radius:11px;
- display:grid;place-items:center;background:var(--glow);
- font-size:20px;margin-bottom:13px
+.inputbox{
+  display:flex;align-items:flex-end;gap:8px;padding:10px;
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:17px;box-shadow:0 0 25px var(--glow)
 }
-.tool-card b{display:block;font-size:13px;margin-bottom:6px}
-.tool-card span{font-size:11px;color:var(--muted);line-height:1.5}
-.view{display:none}
-.view.active{display:block}
-.panel{
- background:var(--card);border:1px solid var(--border);
- border-radius:16px;padding:22px;margin-top:15px
+.inputbox textarea{
+  flex:1;resize:none;max-height:140px;min-height:40px;
+  background:transparent;border:0;outline:0;color:var(--text);
+  padding:10px 4px;font-size:14px
 }
-.panel h2{font-size:21px;margin:0 0 9px}
-.panel p{color:var(--muted);font-size:13px;line-height:1.7}
-.field{
- width:100%;padding:12px 14px;background:var(--bg);
- border:1px solid var(--border);border-radius:10px;color:var(--text);
- outline:none;margin:8px 0
+.inputbox button{
+  flex-shrink:0;border:1px solid var(--border);border-radius:11px;
+  background:var(--panel2);color:var(--text);padding:10px
 }
-.action{
- background:var(--accent);color:white;border:0;
- padding:11px 16px;border-radius:10px;font-weight:700;font-size:12px
+.inputbox .send{
+  background:var(--accent);color:#00121c;border:0;font-weight:bold
 }
-.list-item{
- display:flex;align-items:center;justify-content:space-between;
- gap:10px;padding:14px;border-bottom:1px solid var(--border);
- font-size:13px
+.disclaimer{text-align:center;color:var(--muted);font-size:10px;margin-top:9px}
+.theme-panel{
+  display:none;position:fixed;inset:0;background:#0009;z-index:20;
+  align-items:center;justify-content:center;padding:18px
 }
-.chat-area{max-width:800px;margin:auto}
-.message{
- padding:14px 17px;border-radius:14px;margin:13px 0;
- background:var(--card);font-size:13px;line-height:1.7;
- white-space:pre-wrap
+.theme-panel.open{display:flex}
+.theme-card{
+  width:min(570px,100%);max-height:85dvh;overflow:auto;
+  background:var(--panel2);border:1px solid var(--border);
+  border-radius:18px;padding:20px
 }
-.message.user{background:var(--glow);border:1px solid var(--border)}
-.empty{text-align:center;padding:50px 15px;color:var(--muted)}
-.theme-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
-.theme{
- width:95px;height:70px;border-radius:12px;border:2px solid var(--border);
- color:white;font-size:11px;font-weight:700
+.theme-head{display:flex;justify-content:space-between;align-items:center}
+.theme-head h2{font-size:18px}
+.theme-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:16px}
+.theme-option{
+  padding:12px;border:1px solid var(--border);border-radius:11px;
+  background:var(--panel);color:var(--text);text-align:left;font-size:12px
 }
-.overlay{
- display:none;position:fixed;inset:0;background:#0009;z-index:19
+.theme-option.selected{outline:2px solid var(--accent)}
+.theme-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px}
+.toast{
+  position:fixed;bottom:100px;left:50%;transform:translateX(-50%);
+  background:var(--panel);border:1px solid var(--border);padding:10px 15px;
+  border-radius:10px;font-size:12px;display:none;z-index:30
 }
-.footer{text-align:center;color:#68718b;font-size:11px;margin-top:55px}
-@media(max-width:900px){
- .sidebar{transform:translateX(-100%)}
- .sidebar.open{transform:translateX(0)}
- .main{margin-left:0;width:100%}
- .overlay.show{display:block}
- .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-@media(max-width:520px){
- .content{padding:20px 15px 50px}
- .topbar{padding:0 14px}
- .hero{padding-top:45px}
- .hero h1{letter-spacing:-1px}
- .grid{grid-template-columns:1fr 1fr;gap:9px}
- .tool-card{padding:13px;min-height:135px}
- .top-btn{padding:8px}
- .section-heading{margin-top:29px}
+@media(max-width:760px){
+  .sidebar{
+    position:fixed;left:-285px;top:0;bottom:0;width:265px;
+    transition:left .25s;box-shadow:10px 0 35px #0008
+  }
+  .sidebar.open{left:0}
+  .menu-btn{display:inline-block}
+  .topbar{padding:0 12px}
+  .content{padding:18px 12px}
+  .welcome{margin-top:7vh}
+  .composer-wrap{padding:10px 10px 14px}
+  .quick-grid{gap:8px}
+  .quick{padding:11px}
+  .bubble{max-width:86%}
 }
 </style>
 </head>
+
 <body>
 <div class="app">
 <aside class="sidebar" id="sidebar">
- <div class="brand">
-  <div class="logo">F</div>
-  <div><div class="brand-name">FURQAN AI</div>
-  <div class="brand-sub">INTELLIGENCE HUB</div></div>
- </div>
-
- <div class="group-title">WORKSPACE</div>
- <button class="nav active" data-page="home"><span class="nav-icon">⌂</span>Dashboard</button>
- <button class="nav" data-page="chat"><span class="nav-icon">✧</span>New Chat</button>
- <button class="nav" data-page="search"><span class="nav-icon">⌕</span>Search Chats</button>
- <button class="nav" data-page="projects"><span class="nav-icon">▣</span>Projects</button>
- <button class="nav" data-page="chats"><span class="nav-icon">▤</span>Chats</button>
- <button class="nav" data-page="explore"><span class="nav-icon">◈</span>Explore AI</button>
-
- <div class="group-title">DEVELOPMENT LAB</div>
- <button class="nav" data-page="coding"><span class="nav-icon">⌘</span>Coding Assistant</button>
- <button class="nav" data-page="python"><span class="nav-icon">🐍</span>Python Tools</button>
- <button class="nav" data-page="java"><span class="nav-icon">☕</span>Java Tools</button>
- <button class="nav" data-page="kali"><span class="nav-icon">⌁</span>Kali Linux Lab</button>
- <button class="nav" data-page="debug"><span class="nav-icon">⚙</span>Debugging Tools</button>
- <button class="nav" data-page="website"><span class="nav-icon">🌐</span>Website Builder</button>
- <button class="nav" data-page="database"><span class="nav-icon">▥</span>Database Tools</button>
-
- <div class="group-title">CREATIVE STUDIO</div>
- <button class="nav" data-page="image"><span class="nav-icon">▧</span>AI Image Studio</button>
- <button class="nav" data-page="writing"><span class="nav-icon">✎</span>Writing Studio</button>
- <button class="nav" data-page="pdf"><span class="nav-icon">▤</span>PDF Assistant</button>
- <button class="nav" data-page="translator"><span class="nav-icon">文</span>Translator</button>
-
- <div class="group-title">PERSONAL</div>
- <button class="nav" data-page="promote"><span class="nav-icon">↗</span>Promote</button>
-
- <div class="nav-bottom">
-  <button class="nav" data-page="themes"><span class="nav-icon">◐</span>Themes</button>
-  <button class="nav" data-page="settings"><span class="nav-icon">⚙</span>Settings</button>
-  <div class="profile"><div class="avatar">F</div>
-   <div><b style="font-size:12px">Furqan</b><small>Free Workspace</small></div>
+  <div class="brand">
+    <div class="logo">F</div>
+    <div><h2>FURQAN AI</h2><small>INTELLIGENCE SYSTEM</small></div>
   </div>
- </div>
+
+  <button class="newchat" id="newChat">＋ &nbsp; New conversation</button>
+
+  <div class="nav">
+    <div class="section-label">Workspace</div>
+    <button class="active" data-tool="chat"><span>◈</span> AI Assistant</button>
+    <button data-tool="writer"><span>✍</span> AI Writer</button>
+    <button data-tool="code"><span>⌘</span> Coding Assistant</button>
+    <button data-tool="java"><span>☕</span> Java Assistant</button>
+    <button data-tool="linux"><span>▣</span> Linux Learning</button>
+    <button data-tool="website"><span>◎</span> Website Builder</button>
+    <button data-tool="translate"><span>文</span> Translator</button>
+    <button data-tool="summary"><span>▤</span> Summarizer</button>
+    <button data-tool="ideas"><span>✦</span> Creative Ideas</button>
+
+    <div class="section-label">Personal</div>
+    <button id="historyBtn"><span>◷</span> Recent Chats</button>
+    <button id="themesBtn"><span>◐</span> Theme Studio</button>
+    <button id="settingsBtn"><span>⚙</span> Settings</button>
+  </div>
+
+  <div class="sidebar-bottom">
+    <select class="theme-select" id="themeSelect" aria-label="Choose theme">
+      <option value="jarvis">Theme: JARVIS</option>
+    </select>
+    <button class="account" id="loginBtn">
+      <span class="avatar">F</span>
+      <span><b style="font-size:12px">Guest Account</b><br><small style="color:var(--muted)">Google login — next setup</small></span>
+    </button>
+  </div>
 </aside>
 
-<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
-
 <main class="main">
- <header class="topbar">
-  <div class="top-left">
-   <button class="top-btn" onclick="toggleSidebar()">☰</button>
-   <span class="page-title" id="topTitle">Dashboard</span>
-  </div>
-  <div class="top-right">
-   <span class="muted">FREE PLAN</span>
-   <button class="top-btn" onclick="go('themes')">◐ Theme</button>
-  </div>
- </header>
-
- <div class="content">
-
- <!-- HOME -->
- <section class="view active" id="home">
-  <div class="hero">
-   <div class="eyebrow">✦ YOUR PERSONAL INTELLIGENCE HUB ✦</div>
-   <h1>Welcome to <span class="gradient">FURQAN AI</span></h1>
-   <p>Think beyond limits. Build your ideas. Explore intelligence.<br>
-   Your personal digital workspace starts here.</p>
-   <div class="prompt-wrap">
-    <textarea id="homePrompt" placeholder="Ask anything... What would you like to create today?"></textarea>
-    <div class="prompt-bottom">
-     <div class="prompt-tools">
-      <button class="small-btn" onclick="go('image')">＋ Image</button>
-      <button class="small-btn" onclick="go('projects')">▣ Project</button>
-     </div>
-     <button class="send" onclick="sendHome()">↑ Send</button>
+  <header class="topbar">
+    <div class="top-left">
+      <button class="icon-btn menu-btn" id="menuBtn">☰</button>
+      <div><h3>COMMAND CENTER</h3><div class="status">● SYSTEM READY</div></div>
     </div>
-   </div>
-  </div>
-
-  <div class="section-heading">
-   <h2>Explore your workspace</h2>
-   <span class="muted">Your tools, one place</span>
-  </div>
-  <div class="grid">
-   <button class="tool-card" onclick="go('chat')"><div class="tool-icon">✧</div><b>AI Assistant</b><span>Start a conversation and explore ideas.</span></button>
-   <button class="tool-card" onclick="go('projects')"><div class="tool-icon">▣</div><b>Projects</b><span>Organize your creative work.</span></button>
-   <button class="tool-card" onclick="go('coding')"><div class="tool-icon">⌘</div><b>Coding Lab</b><span>Explore programming and code.</span></button>
-   <button class="tool-card" onclick="go('python')"><div class="tool-icon">🐍</div><b>Python Studio</b><span>Learn and write Python scripts.</span></button>
-   <button class="tool-card" onclick="go('kali')"><div class="tool-icon">⌁</div><b>Cyber Lab</b><span>Learn Linux and defensive security.</span></button>
-   <button class="tool-card" onclick="go('image')"><div class="tool-icon">▧</div><b>Creative Studio</b><span>Plan images and creative projects.</span></button>
-  </div>
-  <div class="section-heading"><h2>Development tools</h2></div>
-  <div class="grid">
-   <button class="tool-card" onclick="go('java')"><div class="tool-icon">☕</div><b>Java Tools</b><span>Java learning and code assistance.</span></button>
-   <button class="tool-card" onclick="go('debug')"><div class="tool-icon">⚙</div><b>Code Debugger</b><span>Understand errors and troubleshoot.</span></button>
-   <button class="tool-card" onclick="go('website')"><div class="tool-icon">🌐</div><b>Website Builder</b><span>Plan and build web experiences.</span></button>
-  </div>
- </section>
-
- <!-- CHAT -->
- <section class="view" id="chat">
-  <div class="hero">
-   <div class="eyebrow">FURQAN AI CONVERSATION</div>
-   <h1>What can I <span class="gradient">help with?</span></h1>
-   <p>Your workspace for ideas, learning and creativity.</p>
-  </div>
-  <div class="chat-area">
-   <div id="messages"><div class="empty">✧<br><br>Your conversation will appear here.</div></div>
-   <div class="prompt-wrap">
-    <textarea id="chatInput" placeholder="Message FURQAN AI..." rows="3"></textarea>
-    <div class="prompt-bottom">
-     <span class="muted">Demo mode · AI connection coming next</span>
-     <button class="send" onclick="sendChat()">↑ Send</button>
+    <div class="top-actions">
+      <button class="icon-btn" id="topTheme">◐ Themes</button>
+      <button class="icon-btn" id="clearBtn">＋ New</button>
     </div>
-   </div>
-  </div>
- </section>
+  </header>
 
- <!-- PROJECTS -->
- <section class="view" id="projects">
-  <div class="panel">
-   <h2>▣ Your Projects</h2>
-   <p>Create and organize your work in one place.</p>
-   <input class="field" id="projectName" placeholder="Enter project name">
-   <button class="action" onclick="addProject()">＋ Create Project</button>
-   <div id="projectList"></div>
-  </div>
- </section>
+  <section class="content" id="content">
+    <div class="welcome" id="welcome">
+      <div class="orb">✧</div>
+      <h1>Welcome to <span class="gradient">FURQAN AI</span></h1>
+      <p>Your personal intelligence command center.<br>Think smarter. Create faster. Explore further.</p>
+      <div class="quick-grid">
+        <button class="quick" data-prompt="Help me write a professional article."><b>✍ AI Writing</b><small>Create articles, captions and content</small></button>
+        <button class="quick" data-prompt="Help me build a modern responsive website."><b>⌘ Build a Website</b><small>Plan and write website code</small></button>
+        <button class="quick" data-prompt="Teach me programming step by step."><b>▣ Learn Coding</b><small>Understand programming concepts</small></button>
+        <button class="quick" data-prompt="Give me 10 unique creative project ideas."><b>✦ Creative Ideas</b><small>Discover new digital projects</small></button>
+      </div>
+    </div>
+    <div class="messages" id="messages"></div>
+  </section>
 
- <!-- CHATS -->
- <section class="view" id="chats">
-  <div class="panel"><h2>▤ Chat History</h2>
-   <p>Your saved conversations.</p>
-   <div id="chatList"></div>
+  <div class="composer-wrap">
+    <div class="composer">
+      <div class="attach-preview" id="attachPreview"></div>
+      <div class="inputbox">
+        <input type="file" id="imageInput" accept="image/*" hidden>
+        <button id="attachBtn" title="Attach image">＋</button>
+        <textarea id="prompt" rows="1" placeholder="Message FURQAN AI..."></textarea>
+        <button id="micBtn" title="Voice input">🎙</button>
+        <button class="send" id="sendBtn" title="Send message">➤</button>
+      </div>
+      <div class="disclaimer">FURQAN AI can make mistakes. Verify important information.</div>
+    </div>
   </div>
- </section>
-
- <!-- SEARCH -->
- <section class="view" id="search">
-  <div class="panel"><h2>⌕ Search Chats</h2>
-   <input class="field" id="searchInput" placeholder="Search your conversations..." oninput="searchChats()">
-   <div id="searchResults"></div>
-  </div>
- </section>
-
- <!-- EXPLORE -->
- <section class="view" id="explore">
-  <div class="panel"><h2>◈ Explore AI</h2><p>Explore your available workspace tools.</p>
-   <div class="grid" id="exploreGrid"></div>
-  </div>
- </section>
-
- <!-- DEVELOPMENT TOOLS -->
- <section class="view" id="coding">
-  <div class="panel"><h2>⌘ Coding Assistant</h2><p>Programming workspace for learning, writing and understanding code.</p>
-   <button class="action" onclick="go('python')">Python</button>
-   <button class="action" onclick="go('java')">Java</button>
-   <button class="action" onclick="go('debug')">Debugging</button>
-   <textarea class="field" rows="8" placeholder="Paste your code or describe your programming task..."></textarea>
-   <p>AI code explanation and generation will be enabled after backend connection.</p>
-  </div>
- </section>
-
- <section class="view" id="python">
-  <div class="panel"><h2>🐍 Python Studio</h2><p>Learn Python and prepare scripts.</p>
-   <div class="muted">Available learning tools</div>
-   <div class="list-item">Python Syntax Guide <span>Learning</span></div>
-   <div class="list-item">Variables & Functions <span>Learning</span></div>
-   <div class="list-item">File Handling <span>Learning</span></div>
-   <div class="list-item">API & Automation Concepts <span>Learning</span></div>
-   <textarea class="field" rows="7" placeholder="Write or paste Python code here..."></textarea>
-  </div>
- </section>
-
- <section class="view" id="java">
-  <div class="panel"><h2>☕ Java Studio</h2><p>Java programming learning workspace.</p>
-   <div class="list-item">Java Fundamentals <span>Learning</span></div>
-   <div class="list-item">Object Oriented Programming <span>Learning</span></div>
-   <div class="list-item">Classes & Methods <span>Learning</span></div>
-   <div class="list-item">Exception Handling <span>Learning</span></div>
-   <textarea class="field" rows="7" placeholder="Write or paste Java code here..."></textarea>
-  </div>
- </section>
-
- <section class="view" id="kali">
-  <div class="panel"><h2>⌁ Kali Linux Lab</h2>
-   <p>Cybersecurity education and authorized defensive learning.</p>
-   <div class="list-item">Linux Terminal Basics <span>Learn</span></div>
-   <div class="list-item">File Permissions & Users <span>Learn</span></div>
-   <div class="list-item">Network Diagnostics <span>Learn</span></div>
-   <div class="list-item">Security Logs Analysis <span>Learn</span></div>
-   <div class="list-item">Defensive Security Concepts <span>Learn</span></div>
-   <p>Educational workspace only. No live terminal or security scanning is enabled in this version.</p>
-  </div>
- </section>
-
- <section class="view" id="debug">
-  <div class="panel"><h2>⚙ Debugging Tools</h2><p>Prepare code for troubleshooting.</p>
-   <select class="field" id="debugLanguage">
-    <option>Python</option><option>Java</option><option>JavaScript</option><option>HTML/CSS</option>
-   </select>
-   <textarea class="field" rows="8" placeholder="Paste code or error message here..."></textarea>
-   <p>Code analysis will be connected to the AI backend in the next stage.</p>
-  </div>
- </section>
-
- <section class="view" id="website">
-  <div class="panel"><h2>🌐 Website Builder</h2><p>Plan your next website project.</p>
-   <input class="field" placeholder="Website name">
-   <textarea class="field" rows="5" placeholder="Describe the website you want to build..."></textarea>
-   <p>Website code generation will be enabled with the AI connection.</p>
-  </div>
- </section>
-
- <section class="view" id="database">
-  <div class="panel"><h2>▥ Database Tools</h2><p>Database learning and query workspace.</p>
-   <div class="list-item">SQL Fundamentals</div>
-   <div class="list-item">Database Design</div>
-   <div class="list-item">Tables and Relationships</div>
-   <textarea class="field" rows="6" placeholder="Write your SQL query here..."></textarea>
-  </div>
- </section>
-
- <!-- CREATIVE TOOLS -->
- <section class="view" id="image">
-  <div class="panel"><h2>▧ AI Image Studio</h2><p>Prepare prompts for image creation.</p>
-   <textarea class="field" rows="5" placeholder="Describe your image idea..."></textarea>
-   <p>Image generation integration will be added in the next stage.</p>
-  </div>
- </section>
-
- <section class="view" id="writing">
-  <div class="panel"><h2>✎ Writing Studio</h2><p>Draft ideas for posts, captions, emails and articles.</p>
-   <select class="field"><option>Social media post</option><option>Email</option><option>Article</option><option>Caption</option></select>
-   <textarea class="field" rows="7" placeholder="Describe what you want to write..."></textarea>
-  </div>
- </section>
-
- <section class="view" id="pdf">
-  <div class="panel"><h2>▤ PDF Assistant</h2><p>Select a PDF to prepare for document assistance.</p>
-   <input type="file" class="field" accept=".pdf">
-   <p>PDF reading and summarization will be enabled after backend integration.</p>
-  </div>
- </section>
-
- <section class="view" id="translator">
-  <div class="panel"><h2>文 Translator</h2>
-   <select class="field"><option>English</option><option>Urdu</option><option>Arabic</option><option>Spanish</option><option>French</option></select>
-   <textarea class="field" rows="6" placeholder="Enter text to translate..."></textarea>
-   <p>AI translation will be connected in a later update.</p>
-  </div>
- </section>
-
- <!-- PROMOTE -->
- <section class="view" id="promote">
-  <div class="panel"><h2>↗ Promote</h2>
-   <p>Organize and promote your digital projects.</p>
-   <input class="field" placeholder="Project or website name">
-   <input class="field" placeholder="Project URL">
-   <textarea class="field" rows="4" placeholder="Write a short project description..."></textarea>
-   <button class="action" onclick="alert('Promotion draft feature will be added in a future update.')">Prepare Promotion</button>
-  </div>
- </section>
-
- <!-- THEMES -->
- <section class="view" id="themes">
-  <div class="panel"><h2>◐ Customize your experience</h2>
-   <p>Choose your favorite workspace theme.</p>
-   <div class="theme-row">
-    <button class="theme" style="background:#090b14" onclick="setTheme('midnight')">Midnight</button>
-    <button class="theme" style="background:#24163f" onclick="setTheme('purple')">Purple</button>
-    <button class="theme" style="background:#102641" onclick="setTheme('blue')">Cyber Blue</button>
-    <button class="theme" style="background:#12382e" onclick="setTheme('green')">Emerald</button>
-    <button class="theme" style="background:#eee;color:#222" onclick="setTheme('light')">Light</button>
-    <button class="theme" style="background:linear-gradient(135deg,#101321,#8b5cf6)" onclick="setTheme('neon')">Neon</button>
-   </div>
-   <p>Your selected theme is saved on this device.</p>
-  </div>
- </section>
-
- <!-- SETTINGS -->
- <section class="view" id="settings">
-  <div class="panel"><h2>⚙ Settings</h2>
-   <p>Personalize your FURQAN AI workspace.</p>
-   <label class="muted">Display name</label>
-   <input class="field" id="displayName" value="Furqan">
-   <button class="action" onclick="saveName()">Save Name</button>
-   <div class="list-item">Workspace <span>FURQAN AI</span></div>
-   <div class="list-item">Access <span>Public</span></div>
-   <div class="list-item">Theme <span>Customizable</span></div>
-   <button class="action" style="background:#a33" onclick="clearData()">Clear Local Data</button>
-  </div>
- </section>
-
- <div class="footer">FURQAN AI · BUILD • CREATE • EXPLORE<br>Personal AI Workspace</div>
- </div>
 </main>
 </div>
 
-<script>
-const titles={
- home:"Dashboard",chat:"New Chat",search:"Search Chats",
- projects:"Projects",chats:"Chats",explore:"Explore AI",
- coding:"Coding Assistant",python:"Python Tools",java:"Java Tools",
- kali:"Kali Linux Lab",debug:"Debugging Tools",website:"Website Builder",
- database:"Database Tools",image:"AI Image Studio",writing:"Writing Studio",
- pdf:"PDF Assistant",translator:"Translator",promote:"Promote",
- themes:"Themes",settings:"Settings"
-};
+<div class="theme-panel" id="themePanel">
+  <div class="theme-card">
+    <div class="theme-head">
+      <h2>◐ Theme Studio</h2>
+      <button class="icon-btn" id="closeThemes">✕</button>
+    </div>
+    <p style="color:var(--muted);font-size:12px">Choose your command center appearance.</p>
+    <div class="theme-grid" id="themeGrid"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
 
-const toolPages=[
- ["chat","✧","AI Assistant","Conversations and ideas"],
- ["coding","⌘","Coding Assistant","Programming workspace"],
- ["python","🐍","Python","Python learning tools"],
- ["java","☕","Java","Java learning tools"],
- ["kali","⌁","Kali Linux","Defensive security learning"],
- ["debug","⚙","Debugger","Understand code errors"],
- ["website","🌐","Website Builder","Website planning"],
- ["database","▥","Database","SQL and database learning"],
- ["image","▧","Image Studio","Creative image prompts"],
- ["writing","✎","Writing Studio","Writing workspace"],
- ["pdf","▤","PDF Assistant","Document workspace"],
- ["translator","文","Translator","Translation workspace"]
+<script>
+const themes = [
+ ["JARVIS Classic","#07101d","#12243a","#39d9ff","#167dff"],
+ ["Spider-Man","#16080d","#2a101b","#ff334f","#167bff"],
+ ["Avengers Command","#090d1c","#18233a","#e6bd58","#437cff"],
+ ["Iron Armor","#170b0a","#321513","#ff5544","#e9a53b"],
+ ["Captain Shield","#081322","#152c48","#54aaff","#e74747"],
+ ["Thor Asgard","#100d1d","#28203c","#c6a7ff","#67d9ff"],
+ ["Wakanda","#080f12","#142a29","#b18cff","#44d6b0"],
+ ["Doctor Strange","#120a20","#28143d","#d28cff","#ff8a43"],
+ ["Hulk Gamma","#07140c","#132a1a","#65ef78","#b2e84b"],
+ ["Venom Dark","#050608","#17191e","#eeeeee","#777b88"],
+ ["Batman Gotham","#080b12","#171d2b","#f4d35e","#8298b6"],
+ ["Superman Krypton","#081322","#142b48","#55b9ff","#ff5c5c"],
+ ["Cyberpunk Neon","#10091b","#241332","#ff42d0","#36f4ff"],
+ ["Matrix Digital","#020b08","#0b2118","#37ff83","#00a95c"],
+ ["Galaxy Universe","#0c0920","#21183e","#ba8cff","#55c7ff"],
+ ["Dark Matter","#08090e","#191b25","#a5a9ff","#6669d9"],
+ ["Quantum Core","#07131b","#102b37","#43f1e3","#3a8dff"],
+ ["Holographic Glass","#0b1420","#1b2c3d","#9eeaff","#b4a3ff"],
+ ["Midnight Black","#050505","#171717","#eeeeee","#777777"],
+ ["Royal Purple","#10091d","#28153e","#d49aff","#8d67ff"],
+ ["Emerald AI","#06130f","#102c21","#4dffb0","#15a87b"],
+ ["Arctic Frost","#081722","#173346","#a9edff","#62a9ff"],
+ ["Neon Tokyo","#10091a","#25112c","#ff5ec4","#45f5e8"],
+ ["Red Alert","#160909","#321313","#ff5252","#ff9a52"],
+ ["Ghost Protocol","#0b1118","#1c2935","#b5d5e9","#708ca8"],
+ ["Future Minimal","#101318","#202832","#d9e8f2","#8da7bd"]
 ];
 
-let chats=JSON.parse(localStorage.getItem("furqanChats")||"[]");
-let projects=JSON.parse(localStorage.getItem("furqanProjects")||"[]");
+const $ = id => document.getElementById(id);
+const messages = $("messages");
+const promptBox = $("prompt");
+let selectedImage = null;
+let chatLog = [];
 
-function save(){
- localStorage.setItem("furqanChats",JSON.stringify(chats));
- localStorage.setItem("furqanProjects",JSON.stringify(projects));
+function notify(text){
+  $("toast").textContent=text;
+  $("toast").style.display="block";
+  setTimeout(()=>$("toast").style.display="none",2600);
 }
 
-function go(id){
- if(!titles[id])return;
- document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
- document.getElementById(id).classList.add("active");
- document.querySelectorAll(".nav").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
- document.getElementById("topTitle").textContent=titles[id];
- document.getElementById("sidebar").classList.remove("open");
- document.getElementById("overlay").classList.remove("show");
- if(id==="projects")renderProjects();
- if(id==="chats")renderChats();
- if(id==="explore")renderExplore();
+function applyTheme(name){
+  const t=themes.find(x=>x[0]===name)||themes[0];
+  const root=document.documentElement;
+  root.style.setProperty("--bg",t[1]);
+  root.style.setProperty("--panel",t[2]);
+  root.style.setProperty("--panel2",t[1]);
+  root.style.setProperty("--accent",t[3]);
+  root.style.setProperty("--accent2",t[4]);
+  root.style.setProperty("--glow",t[3]+"30");
+  document.querySelectorAll(".theme-option").forEach(b=>{
+    b.classList.toggle("selected",b.dataset.theme===name);
+  });
+  $("themeSelect").value=name;
+  localStorage.setItem("furqan-theme",name);
 }
 
-function toggleSidebar(){
- document.getElementById("sidebar").classList.toggle("open");
- document.getElementById("overlay").classList.toggle("show");
+function buildThemes(){
+  themes.forEach(t=>{
+    const option=document.createElement("option");
+    option.value=t[0];option.textContent="Theme: "+t[0];
+    $("themeSelect").appendChild(option);
+
+    const btn=document.createElement("button");
+    btn.className="theme-option";
+    btn.dataset.theme=t[0];
+    btn.innerHTML='<span class="theme-dot" style="background:'+t[3]+'"></span>'+t[0];
+    btn.addEventListener("click",()=>{
+      applyTheme(t[0]);notify(t[0]+" theme applied");
+    });
+    $("themeGrid").appendChild(btn);
+  });
+  applyTheme(localStorage.getItem("furqan-theme")||"JARVIS Classic");
 }
 
-document.querySelectorAll(".nav").forEach(b=>{
- b.addEventListener("click",()=>go(b.dataset.page));
+function openThemes(){$("themePanel").classList.add("open")}
+function closeThemes(){$("themePanel").classList.remove("open")}
+
+function addMessage(text,who="assistant"){
+  $("welcome").style.display="none";
+  const row=document.createElement("div");
+  row.className="msg "+(who==="user"?"user":"assistant");
+  const icon=document.createElement("div");
+  icon.className="msg-icon";icon.textContent=who==="user"?"You":"✧";
+  const bubble=document.createElement("div");
+  bubble.className="bubble";bubble.textContent=text;
+  row.append(icon,bubble);messages.appendChild(row);
+  $("content").scrollTop=$("content").scrollHeight;
+  return bubble;
+}
+
+function newChat(){
+  messages.innerHTML="";
+  $("welcome").style.display="block";
+  chatLog=[];
+  selectedImage=null;
+  $("attachPreview").style.display="none";
+  promptBox.value="";
+}
+
+async function sendMessage(customText){
+  const message=(customText||promptBox.value).trim();
+  if(!message && !selectedImage)return;
+  if(selectedImage){
+    notify("Image analysis will be activated in the next backend setup.");
+    if(!message){
+      notify("Please add a message about your image first.");
+      return;
+    }
+  }
+  addMessage(message,"user");
+  chatLog.push({role:"user",text:message});
+  promptBox.value="";
+  promptBox.style.height="40px";
+  const reply=addMessage("Connecting to FURQAN AI...");
+  $("sendBtn").disabled=true;
+
+  try{
+    const response=await fetch("/.netlify/functions/chat",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({message})
+    });
+    const data=await response.json();
+    if(!response.ok)throw new Error(data.error||"Server error "+response.status);
+    const answer=data.text||data.reply||data.response||
+      (data.candidates?.[0]?.content?.parts||[]).map(p=>p.text||"").join("\n")||
+      "The server responded, but no text was returned.";
+    reply.textContent=answer;
+    chatLog.push({role:"assistant",text:answer});
+  }catch(error){
+    reply.textContent="Connection error: "+error.message+
+      "\n\nCheck your Netlify function and API key configuration.";
+  }finally{
+    $("sendBtn").disabled=false;
+    selectedImage=null;
+    $("attachPreview").style.display="none";
+  }
+}
+
+function useTool(tool){
+  const prompts={
+    chat:"",
+    writer:"Act as a professional AI writer. Help me with: ",
+    code:"Act as an expert software developer. Help me code: ",
+    java:"Teach me Java programming and help me with: ",
+    linux:"Teach me Linux commands and concepts step by step: ",
+    website:"Help me design and build a responsive website for: ",
+    translate:"Translate this text and explain the meaning: ",
+    summary:"Summarize this clearly with important points: ",
+    ideas:"Give me creative and original ideas for: "
+  };
+  promptBox.value=prompts[tool]??"";
+  promptBox.focus();
+  document.querySelectorAll("[data-tool]").forEach(b=>{
+    b.classList.toggle("active",b.dataset.tool===tool);
+  });
+  $("sidebar").classList.remove("open");
+}
+
+$("sendBtn").addEventListener("click",()=>sendMessage());
+promptBox.addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMessage();}
+});
+promptBox.addEventListener("input",()=>{
+  promptBox.style.height="40px";
+  promptBox.style.height=Math.min(promptBox.scrollHeight,140)+"px";
+});
+$("newChat").addEventListener("click",newChat);
+$("clearBtn").addEventListener("click",newChat);
+$("menuBtn").addEventListener("click",()=>$("sidebar").classList.toggle("open"));
+$("themesBtn").addEventListener("click",openThemes);
+$("topTheme").addEventListener("click",openThemes);
+$("closeThemes").addEventListener("click",closeThemes);
+$("themePanel").addEventListener("click",e=>{
+  if(e.target===$("themePanel"))closeThemes();
+});
+$("themeSelect").addEventListener("change",e=>applyTheme(e.target.value));
+
+document.querySelectorAll("[data-tool]").forEach(b=>{
+  b.addEventListener("click",()=>useTool(b.dataset.tool));
+});
+document.querySelectorAll("[data-prompt]").forEach(b=>{
+  b.addEventListener("click",()=>{promptBox.value=b.dataset.prompt;promptBox.focus();});
 });
 
-function addProject(){
- const input=document.getElementById("projectName");
- const name=input.value.trim();
- if(!name){alert("Please enter a project name.");return;}
- projects.unshift({name,date:new Date().toLocaleDateString()});
- save();input.value="";renderProjects();
-}
+$("attachBtn").addEventListener("click",()=>$("imageInput").click());
+$("imageInput").addEventListener("change",e=>{
+  const file=e.target.files[0];
+  if(!file)return;
+  if(!file.type.startsWith("image/")){notify("Please select an image file.");return;}
+  selectedImage=file;
+  $("attachPreview").textContent="Selected image: "+file.name+" — image analysis setup comes next.";
+  $("attachPreview").style.display="block";
+});
 
-function renderProjects(){
- const box=document.getElementById("projectList");
- box.innerHTML=projects.length?"":"<div class='empty'>No projects yet. Create your first project.</div>";
- projects.forEach((p,i)=>{
-  const div=document.createElement("div");
-  div.className="list-item";
-  const span=document.createElement("span");
-  span.textContent="▣  "+p.name+" · "+p.date;
-  const del=document.createElement("button");
-  del.className="small-btn";del.textContent="Delete";
-  del.onclick=()=>{projects.splice(i,1);save();renderProjects();};
-  div.append(span,del);box.appendChild(div);
- });
-}
+$("micBtn").addEventListener("click",()=>{
+  const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SpeechRecognition){
+    notify("Voice input is not supported in this browser.");
+    return;
+  }
+  const recognition=new SpeechRecognition();
+  recognition.lang="en-US";
+  recognition.interimResults=false;
+  recognition.onresult=e=>{
+    promptBox.value+=(promptBox.value?" ":"")+e.results[0][0].transcript;
+  };
+  recognition.onerror=()=>notify("Microphone input failed. Check browser permission.");
+  recognition.start();
+  notify("Listening...");
+});
 
-function renderChats(){
- const box=document.getElementById("chatList");
- box.innerHTML=chats.length?"":"<div class='empty'>Your conversations will appear here.</div>";
- chats.forEach(c=>{
-  const div=document.createElement("div");
-  div.className="list-item";
-  const span=document.createElement("span");
-  span.textContent="✧  "+c.question;
-  const open=document.createElement("button");
-  open.className="small-btn";open.textContent="Open";
-  open.onclick=()=>{go("chat");document.getElementById("messages").innerHTML="";
-   addMessage(c.question,"user");addMessage(c.answer,"ai");};
-  div.append(span,open);box.appendChild(div);
- });
-}
+$("historyBtn").addEventListener("click",()=>{
+  notify("Cloud chat history will be connected with Google login in a later step.");
+});
+$("settingsBtn").addEventListener("click",()=>{
+  notify("Account and security settings will be configured in a later step.");
+});
+$("loginBtn").addEventListener("click",()=>{
+  notify("Google sign-in will be activated after Firebase setup.");
+});
 
-function searchChats(){
- const q=document.getElementById("searchInput").value.toLowerCase();
- const box=document.getElementById("searchResults");
- box.innerHTML="";
- const results=chats.filter(c=>c.question.toLowerCase().includes(q));
- results.forEach(c=>{
-  const div=document.createElement("div");
-  div.className="list-item";
-  div.textContent=c.question;
-  box.appendChild(div);
- });
- if(!results.length)box.textContent="No matching conversations.";
-}
-
-function renderExplore(){
- const box=document.getElementById("exploreGrid");box.innerHTML="";
- toolPages.forEach(t=>{
-  const b=document.createElement("button");
-  b.className="tool-card";
-  b.innerHTML="<div class='tool-icon'>"+t[1]+"</div><b>"+t[2]+"</b><span>"+t[3]+"</span>";
-  b.onclick=()=>go(t[0]);box.appendChild(b);
- });
-}
-
-function addMessage(text,type){
- const box=document.getElementById("messages");
- if(box.querySelector(".empty"))box.innerHTML="";
- const div=document.createElement("div");
- div.className="message "+(type==="user"?"user":"");
- div.textContent=text;box.appendChild(div);
-}
-
-function sendChat(){
- const input=document.getElementById("chatInput");
- const q=input.value.trim();if(!q)return;
- addMessage(q,"user");
- const answer="This is the FURQAN AI preview. Your message has been received, but real AI responses are not connected yet. The next development stage will connect a secure AI backend.";
- addMessage(answer,"ai");
- chats.unshift({question:q,answer});
- save();input.value="";
-}
-
-function sendHome(){
- const input=document.getElementById("homePrompt");
- if(!input.value.trim())return;
- const q=input.value.trim();input.value="";
- go("chat");
- document.getElementById("messages").innerHTML="";
- document.getElementById("chatInput").value=q;
- sendChat();
-}
-
-const themes={
- midnight:["#090b14","#101321","#151a2b","#20263a","#f4f5ff","#9299b2","#9475ff","#40c8ff"],
- purple:["#100a1d","#1b1230","#291b40","#3b2857","#fff5ff","#c0acd2","#b18aff","#ee82ff"],
- blue:["#07111f","#0d1d32","#132a45","#203d5e","#f1f7ff","#9db3ce","#399dff","#47d8ff"],
- green:["#07140f","#10251c","#18382b","#25503c","#effff5","#a1c5ad","#3abf86","#8be8b7"],
- light:["#f4f6fb","#ffffff","#e8ecf5","#dce2ef","#172033","#68758d","#7656df","#279ac6"],
- neon:["#090914","#141326","#201d3c","#32265a","#ffffff","#aaa3c9","#bd68ff","#3ce6ef"]
-};
-
-function setTheme(name){
- const t=themes[name];if(!t)return;
- const r=document.documentElement.style;
- ["--bg","--panel","--card","--hover","--text","--muted","--accent","--accent2"].forEach((key,i)=>r.setProperty(key,t[i]));
- localStorage.setItem("furqanTheme",name);
-}
-function saveName(){
- const name=document.getElementById("displayName").value.trim();
- if(!name){alert("Enter a name.");return;}
- document.querySelector(".profile b").textContent=name;
- localStorage.setItem("furqanName",name);
- alert("Name saved!");
-}
-function clearData(){
- if(!confirm("Delete your locally saved chats and projects?"))return;
- chats=[];projects=[];save();renderProjects();renderChats();
- alert("Local data cleared.");
-}
-
-const savedTheme=localStorage.getItem("furqanTheme");
-if(savedTheme)setTheme(savedTheme);
-const savedName=localStorage.getItem("furqanName");
-if(savedName){
- document.getElementById("displayName").value=savedName;
- document.querySelector(".profile b").textContent=savedName;
-}
+buildThemes();
 </script>
 </body>
-  </html>
+</html>
